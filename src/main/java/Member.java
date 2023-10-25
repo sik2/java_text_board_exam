@@ -2,13 +2,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.lang.reflect.Member;
-
 @Getter
 @Setter
 @AllArgsConstructor
-public class Article {
+public class Member {
     private long id;
-    private String title;
-    private String content;
+    private String userId;
+    private String password;
+    private String regDate;
 }
