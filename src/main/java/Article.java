@@ -8,6 +8,7 @@ public class Article {
         this.id = id;
         this.title = title;
         this.content = content;
+        this.userId = userId;
 
     }
     long getId(){

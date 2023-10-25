@@ -7,10 +7,11 @@ public class App {
     List<Member> memberList = new ArrayList<>();
     List<Article> articleList = new ArrayList<>();
     Scanner sc = new Scanner(System.in);
-    void run(){
+    Member loginedMember = null;
+
+    void run() {
         System.out.println("==프로그램 시작==");
         long lastId = 0;
-        Member loginedMember = null;
         while (true) {
             System.out.printf("명령어) ");
             String command = sc.nextLine();
@@ -95,10 +96,9 @@ public class App {
                 String title = sc.nextLine();
                 System.out.printf("내용: ");
                 String content = sc.nextLine();
-
+                lastId++;
                 Article article = new Article(lastId, title, content, loginedMember.getUserId());
                 articleList.add(article);
-                lastId++;
                 System.out.println(lastId + "번째 게시물 등록");
             } else if (command.equals("목록")) {
                 if (articleList.size() == 0) {
@@ -117,20 +117,14 @@ public class App {
                 }
                 System.out.printf("삭제 번호: ");
                 long id = Long.parseLong(sc.nextLine());
-                long foundIndex = -1;
-                for (int i = 0; i < articleList.size(); i++) {
-                    Article article = articleList.get(i);
-                    if (article.getId() == id) {
-                        foundIndex = id;
-                        articleList.remove(article);
-                        break;
-                    }
-                }
-                if (foundIndex == -1) {
+                Article article = this.articleFindById(id);
+
+                if (article == null) {
                     System.out.println(id + "번째 게시물은 존재하지 않습니다.");
                 } else {
                     System.out.println(id + "번째 게시글이 삭제 되었습니다.");
                 }
+                articleList.remove(article);
             } else if (command.equals("수정")) {
                 if (loginedMember == null) {
                     System.out.println("로그인 후 수정이 가능합니다.");
@@ -138,28 +132,29 @@ public class App {
                 }
                 System.out.println("수정 번호: ");
                 long id = Long.parseLong(sc.nextLine());
-                long foundIndex = -1;
-
-                for (int i = 0; i < articleList.size(); i++) {
-                    Article article = articleList.get(i);
-                    if (article.getId() == id) {
-                        foundIndex = id;
-                        System.out.printf("기존 제목: %s\n", article.getTitle());
-                        String title = sc.nextLine();
-                        article.setTitle(title);
-                        System.out.printf("기존 내용: %s\n", article.getContent());
-                        String content = sc.nextLine();
-                        article.setContent(content);
-                        break;
-                    }
-                    if (foundIndex == -1) {
-                        System.out.println(id + "번째 게시물이 존재하지 않습니다.");
-                    } else {
-                        System.out.println(id + "번째 게시물이 수정되었습니다.");
-                    }
+                Article article = this.articleFindById(id);
+                if (article == null) {
+                    System.out.println(id + "번째 게시물이 존재하지 않습니다.");
                 }
+                System.out.printf("기존 제목: %s\n", article.getTitle());
+                String title = sc.nextLine();
+                article.setTitle(title);
+                System.out.printf("기존 내용: %s\n", article.getContent());
+                String content = sc.nextLine();
+                article.setContent(content);
+                System.out.println(id + "번째 게시물이 수정되었습니다.");
+            }
 
+        }
+    }
+
+    private Article articleFindById(long id) {
+        for (int i = 0; i < articleList.size(); i++) {
+            Article article = articleList.get(i);
+            if (article.getId() == id) {
+                return article;
             }
         }
+        return null;
     }
 }
